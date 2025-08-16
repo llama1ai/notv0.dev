@@ -1,6 +1,6 @@
 import { AI_MODELS, SharedV2ProviderOptions } from "@/lib/models";
 import { convertToUIMessages } from "@/lib/utils";
-import { openai } from "@ai-sdk/openai";
+import { xai } from "@ai-sdk/xai";
 
 import {
   createArtifact,
@@ -11,7 +11,6 @@ import {
   getMessagesByChatId,
 } from "@/utils/supabase/actions";
 import { createClient } from "@/utils/supabase/server";
-import { anthropic } from "@ai-sdk/anthropic";
 import {
   convertToModelMessages,
   createUIMessageStream,
@@ -87,16 +86,12 @@ export const POST = async (req: NextRequest) => {
     let model = null;
     let providerOptions: SharedV2ProviderOptions | undefined = undefined;
     switch (selectedModel.provider) {
-      case "Anthropic":
-        model = anthropic(modelId);
-        providerOptions = selectedModel.providerOptions ?? undefined;
-        break;
-      case "OpenAI":
-        model = openai(modelId);
+      case "XAI":
+        model = xai(modelId);
         providerOptions = selectedModel.providerOptions ?? undefined;
         break;
       default:
-        model = anthropic("claude-3-5-sonnet-latest");
+        model = xai("grok-3");
     }
 
     const stream = createUIMessageStream({
